@@ -2,3 +2,5 @@
 efficientnetB0.keras
 vgg_model.h5
 vgg16_best_model.keras
+streamlit/secrets.toml
+.venv/
