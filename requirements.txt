@@ -7,3 +7,4 @@ tqdm>=4.65.0
 tensorflow>=2.12.0
 Pillow>=10.0.0
 scikit-learn>=1.2.0
+boto3==<version>
