@@ -5,7 +5,7 @@ import numpy as np
 import json
 import boto3
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from botocore.exceptions import ClientError
 
 # load_dotenv()
