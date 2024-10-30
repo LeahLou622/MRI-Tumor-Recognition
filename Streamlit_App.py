@@ -8,7 +8,7 @@ import os
 
 
 # load_dotenv()
-# aws_access_key_id = os.getenv('aws_access_key_id')
+# aws_access_key_id = os.getenv('aws_access_key_id')stream
 # aws_secret_access_key = os.getenv('aws_secret_access_key')
 # aws_default_region = os.getenv('aws_default_region')
 
