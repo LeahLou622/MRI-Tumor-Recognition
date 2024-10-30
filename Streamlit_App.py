@@ -3,10 +3,9 @@ import tensorflow as tf
 from PIL import Image
 import numpy as np
 import json
-import boto3
 import os
 # from dotenv import load_dotenv
-from botocore.exceptions import ClientError
+
 
 # load_dotenv()
 # aws_access_key_id = os.getenv('aws_access_key_id')
@@ -21,62 +20,6 @@ from botocore.exceptions import ClientError
 #     region_name=aws_default_region
 # )
 
-def get_secret():
-
-    secret_name = "streamlit_app_credentials"
-    region_name = "us-east-2"
-
-    # Create a Secrets Manager client
-    session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=region_name
-    )
-
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-    except ClientError as e:
-        # For a list of exceptions thrown, see
-        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-        raise e
-
-    secret = get_secret_value_response['SecretString']
-
-    # Parse the secret and return as dictionary
-    secret = json.loads(get_secret_value_response['SecretString'])
-    return secret
-
-# Retrieve secrets and set up S3 client
-secrets = get_secret()
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=secrets['aws_access_key_id'],
-    aws_secret_access_key=secrets['aws_secret_access_key'],
-    region_name=secrets['region_name']
-)
-
-# Load the saved VGG model from S3
-def load_model(model_path, bucket_name):
-    try:
-        # Check if the model file exists in S3
-        s3.head_object(Bucket=bucket_name, Key=model_path)
-
-        # If it exists, download the model
-        temp_model_path = '/tmp/vgg_model.h5'
-        if os.path.exists(temp_model_path):
-            os.remove(temp_model_path)  # Remove existing model if it exists
-
-        s3.download_file(bucket_name, model_path, temp_model_path)
-
-        # Load the model directly from the downloaded file
-        model = tf.keras.models.load_model(temp_model_path, compile=False)
-        return model
-    except s3.exceptions.NoSuchKey:
-        raise FileNotFoundError(f"The model file {model_path} does not exist in bucket {bucket_name}.")
-    except Exception as e:
-        raise Exception(f"Error loading model from S3: {str(e)}")
 
 # Function to preprocess a single image
 def preprocess_image(image):
@@ -108,8 +51,8 @@ def main():
         model = None  # Initialize model variable
 
         try:
-            # Load the VGG model from S3
-            model = load_model('vgg_model.h5', 'tumor-image-rec')
+            # Load the VGG model
+            model = tf.keras.models.load_model("vgg_model.h5", compile=False)
         except Exception as e:
             st.error(f"Error loading model: {str(e)}")
             return  # Exit if model loading fails
