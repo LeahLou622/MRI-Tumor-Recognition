@@ -4,21 +4,6 @@ from PIL import Image
 import numpy as np
 import json
 import os
-# from dotenv import load_dotenv
-
-
-# load_dotenv()
-# aws_access_key_id = os.getenv('aws_access_key_id')stream
-# aws_secret_access_key = os.getenv('aws_secret_access_key')
-# aws_default_region = os.getenv('aws_default_region')
-
-# # Create an S3 client using the hardcoded credentials
-# s3 = boto3.client(
-#     's3',
-#     aws_access_key_id=aws_access_key_id,
-#     aws_secret_access_key=aws_secret_access_key,
-#     region_name=aws_default_region
-# )
 
 
 # Function to preprocess a single image
@@ -63,7 +48,7 @@ def main():
                 prediction = run_prediction(model, preprocessed_image)
 
                 # Define tumor types based on prediction indices
-                tumor_types = ["Glioma", "Meningioma", "Pituitary", "No Tumor"]
+                tumor_types = ["Glioma", "Meningioma", "No Tumor", "Pituitary"]
 
                 # Get the predicted class index and corresponding probability
                 predicted_class_index = np.argmax(prediction[0])
@@ -94,10 +79,16 @@ def main():
                     Pituitary adenomas, mostly benign, occur in the pituitary gland, accounting for 10-25% of intracranial neoplasms. 
                     They may cause hormonal imbalances, resulting in a variety of symptoms including headaches, vision changes, or hormonal dysfunctions.
                     """)
-                else:  # No Tumor
+
+                elif predicted_class_index == 2:  # No Tumor
                     st.markdown("""
                     ### No Tumor:
                     The prediction indicates that there are no tumors detected in the scanned MRI image.
+                    """)
+                else:   
+                    st.markdown("""
+                    ### Unexpected image:
+                    The image input into the model was not recognized as a MRI image of the brain.
                     """)
 
             except Exception as e:
