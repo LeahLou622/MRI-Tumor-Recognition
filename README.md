@@ -44,7 +44,7 @@ Dropout Layer: A dropout layer is added to further prevent overfitting, particul
 
 The total number of parameters is approximately 14.7 million, all of which are trainable due to unfreezing the entire model, enhancing its ability to learn from our specific dataset. This level of complexity allows the model to capture the nuances needed for accurate tumor classification.
 
- Layer (type)                Output Shape              Param #  
+ Layer (type)                Output Shape              Param #   
 =================================================================
  input_4 (InputLayer)        [(None, 150, 150, 3)]     0         
                                                                  
